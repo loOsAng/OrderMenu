@@ -119,3 +119,19 @@ export async function updateOrderStatus(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath(`/orders/${id}`);
 }
+
+export async function deleteOrder(formData: FormData) {
+  await requireAdminSession();
+
+  const id = getStringValue(formData, "id");
+
+  if (!id) {
+    throw new Error("缺少订单 ID");
+  }
+
+  await prisma.order.delete({
+    where: { id },
+  });
+
+  revalidatePath("/admin");
+}

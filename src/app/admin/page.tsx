@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { adminSessionCookieName, verifyAdminSessionValue } from "@/lib/auth";
-import { createDish, deleteDish, updateDish, updateOrderStatus } from "@/lib/actions";
+import { createDish, deleteDish, deleteOrder, updateDish, updateOrderStatus } from "@/lib/actions";
 import { formatOrderStatus, formatPrice } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import { ensureSeedData } from "@/lib/seed";
@@ -23,6 +23,13 @@ function getStatusClasses(status: string) {
       return "bg-slate-100 text-slate-700";
   }
 }
+
+const orderStatuses = [
+  { value: "PENDING", label: "待接单" },
+  { value: "COOKING", label: "制作中" },
+  { value: "READY", label: "已完成" },
+  { value: "CANCELLED", label: "已取消" },
+] as const;
 
 export default async function AdminPage() {
   const cookieStore = await cookies();
@@ -257,25 +264,41 @@ export default async function AdminPage() {
                   <p className="mt-2 text-sm leading-6 text-slate-500">备注：{order.note || "无"}</p>
                 </div>
 
-                <form action={updateOrderStatus} className="flex items-center gap-3">
-                  <input type="hidden" name="id" value={order.id} />
-                  <select
-                    name="status"
-                    defaultValue={order.status}
-                    className="rounded-full border border-slate-200 px-4 py-3 text-sm outline-none ring-orange-200 transition focus:ring"
-                  >
-                    <option value="PENDING">待接单</option>
-                    <option value="COOKING">制作中</option>
-                    <option value="READY">已完成</option>
-                    <option value="CANCELLED">已取消</option>
-                  </select>
-                  <button
-                    type="submit"
-                    className="rounded-full bg-orange-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-orange-600"
-                  >
-                    更新状态
-                  </button>
-                </form>
+                <div className="flex flex-wrap items-center justify-end gap-3">
+                  <form action={updateOrderStatus} className="flex flex-wrap items-center gap-2">
+                    <input type="hidden" name="id" value={order.id} />
+                    {orderStatuses.map((statusOption) => {
+                      const isCurrent = order.status === statusOption.value;
+
+                      return (
+                        <button
+                          key={statusOption.value}
+                          type="submit"
+                          name="status"
+                          value={statusOption.value}
+                          disabled={isCurrent}
+                          className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                            isCurrent
+                              ? "cursor-default bg-slate-900 text-white"
+                              : "border border-slate-200 text-slate-700 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600"
+                          }`}
+                        >
+                          {statusOption.label}
+                        </button>
+                      );
+                    })}
+                  </form>
+
+                  <form action={deleteOrder}>
+                    <input type="hidden" name="id" value={order.id} />
+                    <button
+                      type="submit"
+                      className="rounded-full border border-rose-200 px-4 py-2 text-sm font-medium text-rose-600 transition hover:bg-rose-50"
+                    >
+                      移除订单
+                    </button>
+                  </form>
+                </div>
               </div>
 
               <div className="mt-5 grid gap-3 md:grid-cols-2">
