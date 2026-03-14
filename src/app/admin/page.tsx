@@ -265,29 +265,29 @@ export default async function AdminPage() {
                 </div>
 
                 <div className="flex flex-wrap items-center justify-end gap-3">
-                  <form action={updateOrderStatus} className="flex flex-wrap items-center gap-2">
-                    <input type="hidden" name="id" value={order.id} />
+                  <div className="flex flex-wrap items-center gap-2">
                     {orderStatuses.map((statusOption) => {
                       const isCurrent = order.status === statusOption.value;
 
                       return (
-                        <button
-                          key={statusOption.value}
-                          type="submit"
-                          name="status"
-                          value={statusOption.value}
-                          disabled={isCurrent}
-                          className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                            isCurrent
-                              ? "cursor-default bg-slate-900 text-white"
-                              : "border border-slate-200 text-slate-700 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600"
-                          }`}
-                        >
-                          {statusOption.label}
-                        </button>
+                        <form key={statusOption.value} action={updateOrderStatus}>
+                          <input type="hidden" name="id" value={order.id} />
+                          <input type="hidden" name="status" value={statusOption.value} />
+                          <button
+                            type="submit"
+                            disabled={isCurrent}
+                            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                              isCurrent
+                                ? "cursor-default bg-slate-900 text-white"
+                                : "border border-slate-200 text-slate-700 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600"
+                            }`}
+                          >
+                            {statusOption.label}
+                          </button>
+                        </form>
                       );
                     })}
-                  </form>
+                  </div>
 
                   <form action={deleteOrder}>
                     <input type="hidden" name="id" value={order.id} />
