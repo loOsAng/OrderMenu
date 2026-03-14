@@ -22,13 +22,15 @@
 ## 必填环境变量
 
 - `DATABASE_URL`
+- `DIRECT_URL`
 - `ADMIN_PASSWORD`
 - `AUTH_SECRET`
 
 本地开发示例：
 
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://USER:PASSWORD@ep-example-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+DIRECT_URL="postgresql://USER:PASSWORD@ep-example.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 ADMIN_PASSWORD="your-admin-password"
 AUTH_SECRET="a-long-random-secret"
 ```
@@ -38,38 +40,43 @@ AUTH_SECRET="a-long-random-secret"
 如果你想让朋友长期直接用手机打开，推荐下面这套：
 
 - 部署平台：`Railway`
+- 数据库：`Neon Postgres`
 - 访问方式：给朋友发主站链接，例如 `https://menu.xxx.app`
 - 后台地址：你自己保存 `https://menu.xxx.app/admin/login`
 
 为什么先推荐 `Railway`：
 
-- 这一版默认用 `SQLite`
 - 比起 Vercel，它更容易保持一个长期在线的 Node 服务
-- 可以挂载持久化卷来保存 `SQLite` 数据文件
-- 你后续可以再升级成 Postgres
+- 配合 `Neon` 不需要依赖本地卷保存数据
+- 代码更新后，菜品和订单不会因为重新部署丢失
 
-## Railway 部署步骤
+## Neon + Railway 部署步骤
 
 1. 把代码推到 GitHub
-2. 在 Railway 新建项目并导入仓库
-3. 给项目挂一个持久化卷，比如挂载到 `/data`
-4. 配置环境变量：
-   `DATABASE_URL=file:/data/dev.db`
+2. 在 [Neon](https://neon.tech/) 新建一个 Postgres 数据库
+3. 在 Neon 里复制两个连接串：
+   `DATABASE_URL`: 用 pooled connection string
+   `DIRECT_URL`: 用 direct connection string
+4. 在 Railway 新建项目并导入仓库
+5. 在 Railway 的服务变量里配置：
+   `DATABASE_URL=你的 Neon pooled 连接串`
+   `DIRECT_URL=你的 Neon direct 连接串`
    `ADMIN_PASSWORD=你自己的后台密码`
    `AUTH_SECRET=一串足够长的随机字符串`
-5. 启动命令设为：`npm start`
-6. 部署完成后，把根域名链接发给朋友
+6. 启动命令设为：`npm start`
+7. 部署完成后，把根域名链接发给朋友
 
 说明：
 
-- 现在项目的 `npm start` 已经会先执行 `prisma db push`，所以 Railway 不额外配 pre-deploy 命令也能初始化数据库
+- 现在项目的 `npm start` 已经会先执行 `prisma db push`，所以 Railway 第一次启动时会自动建表
+- `DATABASE_URL` 建议用 Neon 的 pooler 连接串，`DIRECT_URL` 用 direct 连接串
 - 你只需要把首页链接发给朋友，后台入口自己留着：`/admin/login`
 
-## 后续更稳的升级方向
+## 后续可选升级
 
-如果后面订单会越来越多，建议下一步再升级成：
+如果后面订单会越来越多，后面可以再考虑：
 
-- 数据库：`Neon` 或 `Supabase Postgres`
 - 部署：`Vercel`
+- 文件存储：图片上传到 `Cloudinary` 或 `Supabase Storage`
 
-这样会更适合真正长期在线运行，也更方便后面扩展支付、图片上传、消息提醒。
+这样会更适合后面扩展图片上传、支付、消息提醒。
