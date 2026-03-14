@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -143,11 +142,9 @@ export function MenuClient({ dishes }: { dishes: Dish[] }) {
                     >
                       <div className="aspect-[4/3] bg-slate-100">
                         {dish.imageUrl ? (
-                          <Image
+                          <img
                             src={dish.imageUrl}
                             alt={dish.name}
-                            width={900}
-                            height={675}
                             className="h-full w-full object-cover"
                           />
                         ) : (
