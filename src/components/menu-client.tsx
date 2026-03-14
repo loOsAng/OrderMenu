@@ -97,7 +97,7 @@ export function MenuClient({ dishes }: { dishes: Dish[] }) {
     <div className="pb-32">
       <section className="rounded-[2rem] bg-linear-to-br from-orange-500 via-rose-500 to-fuchsia-600 p-8 text-white shadow-lg shadow-orange-500/20">
         <p className="text-sm font-medium uppercase tracking-[0.3em] text-orange-100">Home Kitchen</p>
-        <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">朋友点单菜单</h1>
+        <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">点单菜单</h1>
         <p className="mt-4 max-w-2xl text-sm leading-7 text-orange-50 sm:text-base">
           像外卖一样浏览菜单、加入购物车、写备注下单。这个链接只负责点单，后台管理入口已经单独分开。
         </p>
@@ -209,7 +209,7 @@ export function MenuClient({ dishes }: { dishes: Dish[] }) {
           </div>
           <Link
             href="/checkout"
-            className="rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700"
+            className="rounded-full bg-orange-500 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-orange-600"
           >
             去下单
           </Link>

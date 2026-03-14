@@ -123,7 +123,7 @@ export function CheckoutClient() {
         <p className="mt-3 text-sm leading-6 text-slate-500">先回菜单页挑几道菜，再回来提交订单。</p>
         <Link
           href="/"
-          className="mt-6 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700"
+          className="mt-6 inline-flex rounded-full bg-orange-500 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-orange-600"
         >
           返回菜单
         </Link>
@@ -185,7 +185,7 @@ export function CheckoutClient() {
           </button>
           <Link
             href="/"
-            className="rounded-full border border-slate-200 px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+            className="rounded-full border border-orange-200 px-6 py-3 text-sm font-medium text-orange-600 transition hover:border-orange-300 hover:bg-orange-50"
           >
             返回加菜
           </Link>
